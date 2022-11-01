@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-    <h1>why</h1>
+    <h1>Hier komt de homepage</h1>
 </template>
 
 <style>

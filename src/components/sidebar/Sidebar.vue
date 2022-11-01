@@ -15,12 +15,14 @@
     <div class="sidebar" :style="{ width: sidebarWidth }">
         <h1>
             <span v-if="collapsed">
+                <div>V</div>
+                <div>S</div>
             </span>
             <span v-else>Vue Sidebar</span>
         </h1>
 
         <SidebarLink to="/" icon="fas fa-home">Home</SidebarLink>
-        <SidebarLink to="/" icon="fas fa-columns">Dashboard</SidebarLink>
+        <SidebarLink to="/friends" icon="fas fa-columns">Dashboard</SidebarLink>
         <SidebarLink to="/" icon="fas fa-chart-bar">Analytics</SidebarLink>
         <SidebarLink to="/" icon="fas fa-users">Friends</SidebarLink>
         <SidebarLink to="/" icon="fas fa-image">Images</SidebarLink>

@@ -1,23 +1,78 @@
 <script setup>
+    import { RouterLink, RouterView } from 'vue-router'
+    import HomePage from './components/HomePage.vue'
+    import SideBar from './components/sidebar/SideBar.vue'
 
-    import Login from './components/Login.vue'
-    import Sidebar from './components//sidebar/SideBar.vue'
     import '@aws-amplify/ui-vue/styles.css';
     import { Amplify } from 'aws-amplify';
+    import {
+        Authenticator,
+        AuthenticatorSignUpFormFields,
+        // Vue Composable to get access to validation errors
+        useAuthenticator,
+        // Amplify UI Primitives to simplify the custom fields
+        AmplifyCheckBox,
+    } from '@aws-amplify/ui-vue';
     import '@aws-amplify/ui-vue/styles.css';
 
     import awsExports from './aws-exports';
+    import { toRefs } from 'vue';
     Amplify.configure(awsExports);
+
+    import { VueScrollFixedNavbar } from "vue-scroll-fixed-navbar";
+    const { validationErrors } = toRefs(useAuthenticator());
+
+
+    const services = {
+        async validateCustomSignUp(formData) {
+            if (!formData.acknowledgement) {
+                return {
+                    acknowledgement: 'You must agree to the Terms & Conditions',
+                };
+            }
+        },
+    };
 </script>
 
 <template>
-    <Sidebar><button @click="signOut">Sign Out</button></Sidebar>
-    <router-view />
-    <Login></Login>
-
+    <authenticator initial-state="signIn" :services="services">
+        <template v-slot:sign-up-fields>
+            <authenticator-sign-up-form-fields />
+            <amplify-check-box :errorMessage="validationErrors.acknowledgement" />
+        </template>
+        <template v-slot="{ user, signOut }">
+            <SideBar></SideBar>
+            <HomePage></HomePage>
+            <!--         <h1>Hello {{ user.username }}!</h1>-->
+            <button @click="signOut">Sign Out</button>
+        </template>
+    </authenticator>
 </template>
 
-<style>
+<style scoped>
+    [data-amplify-authenticator] {
+        --amplify-colors-background-primary: var(--amplify-colors-neutral-90);
+        --amplify-colors-background-secondary: var(--amplify-colors-neutral-100);
+        --amplify-colors-brand-primary-10: var(--amplify-colors-teal-100);
+        --amplify-colors-brand-primary-80: var(--amplify-colors-teal-40);
+        --amplify-colors-brand-primary-90: var(--amplify-colors-teal-20);
+        --amplify-colors-brand-primary-100: var(--amplify-colors-teal-10);
+        --amplify-colors-font-interactive: var(--amplify-colors-white);
+        --amplify-components-tabs-item-active-color: var(--amplify-colors-white);
+        --amplify-components-tabs-item-focus-color: var(--amplify-colors-white);
+        --amplify-components-tabs-item-hover-color: var(--amplify-colors-orange);
+    }
+
+    header {
+        line-height: 1.5;
+        max-height: 100vh;
+    }
+
+    .logo {
+        display: block;
+        margin: 0 auto 2rem;
+    }
+
     nav {
         width: 100%;
         font-size: 12px;
