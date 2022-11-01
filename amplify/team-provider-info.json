@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-kwetterfrontend-dev-104636-authRole",
+      "UnauthRoleArn": "arn:aws:iam::075206908135:role/amplify-kwetterfrontend-dev-104636-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::075206908135:role/amplify-kwetterfrontend-dev-104636-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-kwetterfrontend-dev-104636-deployment",
+      "UnauthRoleName": "amplify-kwetterfrontend-dev-104636-unauthRole",
+      "StackName": "amplify-kwetterfrontend-dev-104636",
+      "StackId": "arn:aws:cloudformation:eu-west-1:075206908135:stack/amplify-kwetterfrontend-dev-104636/14fa3080-59ca-11ed-acd1-02b6316edcab",
+      "AmplifyAppId": "d1p5s9v5lpumks"
+    },
+    "categories": {
+      "auth": {
+        "kwetterfrontendd29432eb": {}
+      }
+    }
+  }
+}
