@@ -2,6 +2,7 @@
     import { RouterLink, RouterView } from 'vue-router'
     import HomePage from './components/HomePage.vue'
     import SideBar from './components/sidebar/SideBar.vue'
+    import { onMounted } from 'vue'
 
     import '@aws-amplify/ui-vue/styles.css';
     import { Amplify } from 'aws-amplify';
@@ -13,7 +14,6 @@
         // Amplify UI Primitives to simplify the custom fields
         AmplifyCheckBox,
     } from '@aws-amplify/ui-vue';
-    import '@aws-amplify/ui-vue/styles.css';
 
     import awsExports from './aws-exports';
     import { toRefs } from 'vue';
@@ -22,6 +22,9 @@
     import { VueScrollFixedNavbar } from "vue-scroll-fixed-navbar";
     const { validationErrors } = toRefs(useAuthenticator());
 
+    onMounted(() => {
+        alert('hi')
+    })
 
     const services = {
         async validateCustomSignUp(formData) {
@@ -41,15 +44,29 @@
             <amplify-check-box :errorMessage="validationErrors.acknowledgement" />
         </template>
         <template v-slot="{ user, signOut }">
-            <SideBar></SideBar>
-            <HomePage></HomePage>
-            <!--         <h1>Hello {{ user.username }}!</h1>-->
+            <SideBar></SideBar> <!-- Hier is de error in-->
+            <div class="test">
+                <HomePage></HomePage>
+
+            </div>
             <button @click="signOut">Sign Out</button>
         </template>
+
     </authenticator>
+
 </template>
 
 <style scoped>
+    .test {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 0;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
     [data-amplify-authenticator] {
         --amplify-colors-background-primary: var(--amplify-colors-neutral-90);
         --amplify-colors-background-secondary: var(--amplify-colors-neutral-100);

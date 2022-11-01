@@ -39,8 +39,6 @@
             <amplify-check-box :errorMessage="validationErrors.acknowledgement" />
         </template>
         <template v-slot="{ user, signOut }">
-            <HomePage></HomePage>
-            <!--         <h1>Hello {{ user.username }}!</h1>-->
             <button @click="signOut">Sign Out</button>
         </template>
     </authenticator>

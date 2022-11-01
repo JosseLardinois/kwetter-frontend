@@ -1,37 +1,47 @@
 <script>
     import SidebarLink from './SidebarLink.vue'
+    import Login from '../../components/Login.vue'
+    import { Auth } from 'aws-amplify';
     import { collapsed, toggleSidebar, sidebarWidth } from './state'
 
     export default {
         props: {},
-        components: { SidebarLink },
+        components: { SidebarLink, Login },
         setup() {
             return { collapsed, toggleSidebar, sidebarWidth }
         }
     }
+    import '@aws-amplify/ui-vue/styles.css';
+    import { Amplify } from 'aws-amplify';
+ 
+    import '@aws-amplify/ui-vue/styles.css';
+
+    import awsExports from '../../aws-exports';
+    Amplify.configure(awsExports);
+
 </script>
 
 <template>
     <div class="sidebar" :style="{ width: sidebarWidth }">
         <h1>
             <span v-if="collapsed">
-                <div>V</div>
-                <div>S</div>
             </span>
             <span v-else>Vue Sidebar</span>
         </h1>
 
         <SidebarLink to="/" icon="fas fa-home">Home</SidebarLink>
-        <SidebarLink to="/friends" icon="fas fa-columns">Dashboard</SidebarLink>
+        <SidebarLink to="/" icon="fas fa-columns">Dashboard</SidebarLink>
         <SidebarLink to="/" icon="fas fa-chart-bar">Analytics</SidebarLink>
         <SidebarLink to="/" icon="fas fa-users">Friends</SidebarLink>
         <SidebarLink to="/" icon="fas fa-image">Images</SidebarLink>
+        <Login></Login> <!--Hier zit de error in-->
 
         <span class="collapse-icon"
               :class="{ 'rotate-180': collapsed }"
               @click="toggleSidebar">
             <i class="fas fa-angle-double-left" />
         </span>
+
     </div>
 </template>
 
