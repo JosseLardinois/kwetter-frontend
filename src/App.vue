@@ -19,6 +19,7 @@
 
     const { validationErrors } = toRefs(useAuthenticator());
 
+
     const services = {
         async validateCustomSignUp(formData) {
             if (!formData.acknowledgement) {
@@ -33,22 +34,23 @@
 <template>
     <header>
         <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
         <div class="wrapper">
-
             <nav>
                 <RouterLink to="/">Home</RouterLink>
                 <RouterLink to="/about">About</RouterLink>
             </nav>
         </div>
     </header>
-    <authenticator initial-state="signUp" :services="services">
+
+
+    <authenticator initial-state="signIn" :services="services">
         <template v-slot:sign-up-fields>
             <authenticator-sign-up-form-fields />
             <amplify-check-box :errorMessage="validationErrors.acknowledgement" />
         </template>
         <template v-slot="{ user, signOut }">
-            <h1>Hello {{ user.username }}!</h1>
+            <HelloWorld></HelloWorld>
+            <!--         <h1>Hello {{ user.username }}!</h1>-->
             <button @click="signOut">Sign Out</button>
         </template>
     </authenticator>
@@ -57,6 +59,18 @@
 </template>
 
 <style scoped>
+    [data-amplify-authenticator] {
+        --amplify-colors-background-primary: var(--amplify-colors-neutral-90);
+        --amplify-colors-background-secondary: var(--amplify-colors-neutral-100);
+        --amplify-colors-brand-primary-10: var(--amplify-colors-teal-100);
+        --amplify-colors-brand-primary-80: var(--amplify-colors-teal-40);
+        --amplify-colors-brand-primary-90: var(--amplify-colors-teal-20);
+        --amplify-colors-brand-primary-100: var(--amplify-colors-teal-10);
+        --amplify-colors-font-interactive: var(--amplify-colors-white);
+        --amplify-components-tabs-item-active-color: var(--amplify-colors-white);
+        --amplify-components-tabs-item-focus-color: var(--amplify-colors-white);
+        --amplify-components-tabs-item-hover-color: var(--amplify-colors-orange);
+    }
     header {
         line-height: 1.5;
         max-height: 100vh;
