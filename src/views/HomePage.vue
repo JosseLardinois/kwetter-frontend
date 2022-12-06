@@ -18,6 +18,17 @@ export default {
                 tweets, username
             }
         
+        },
+        data() {
+            return{
+                tweetText:" ",
+            };
+        },
+        methods:{
+            sendTweet(){
+                
+                console.log('text: ' + this.tweetText)
+            }
         }  
 
   }
@@ -32,8 +43,13 @@ export default {
             <div id="username">{{username}}</div>
             <div>{{item.text}}</div>
         </div>
-
     </div> 
+    <div>
+        <h1> Send Tweet</h1>
+        <input type="text" v-model="tweetText" />
+        <button @click="sendTweet">Send Tweet</button>
+
+    </div>
 </template>
 
 <style>
