@@ -7,40 +7,51 @@
     import NoAccess from './views/NoAccess.vue'
 
     import { toRefs } from 'vue';
-
-    let authorization = false;
+    
+    let isAuthenticated  = isAuth();
     onMounted(() => {
-
-        //check if access token is there and
-        
         let currentUrl = window.location.href;
         const token = currentUrl.split(/[\&=/]/);
         setLocalVariables(token);
-        console.log(currentUrl);
-        let check = isAuth();
-        if(check == false){
-
-            console.log('not authorized');
-            router.push('noaccess') 
-            //deny access to page
-        }
-        console.log(check);
-
- 
- 
-        
+        checktoken();
     })
 
-    function isAuth(){
+    function checktoken(){
+        let currentUrl = window.location.href;
+        const token = currentUrl.split(/[\&=/]/);
+        if(isTokenValid(token) ==  true){
+            if(isAuth(token) == true){
+                console.log('valid token')
+                setLocalVariables(token);
+                return true
+            }
+        }
+        else{
+            console.log('invalid token')
+           // localStorage.clear();
+            router.push('noaccess') 
+        }        
+    }
+
+    function isTokenValid(token){
+        if (token[6] == null || token[6] == undefined || token[6] == ''){
+            return false;
+        }
+        else{
+            return true;
+        }
+
+    }
+
+    function isAuth(token){
         if (localStorage.accesstoken) {
             const jwtPayload = parsesJwt(localStorage.accesstoken);
             //console.log(localStorage.accesstoken);
             if (jwtPayload.exp < Date.now()/1000) {
                 // token expired
-                deleteTokenFromLocalStorage();
+                //deleteTokenFromLocalStorage();
                 return false;
             }
-            authorization = true;
             console.log('true');
             return true;
         } else {
@@ -64,24 +75,26 @@
     
 
     function setLocalVariables(token) {
-        try{
+        if(isTokenValid(token)){
             localStorage.setItem("accesstoken", token[6]);
             var json = parsesJwt(token[6])
             localStorage.setItem("username", json.username);
             localStorage.setItem("userId", json.sub);
             localStorage.setItem("role", json["cognito:groups"])
-        }catch{
-            console.log('error');
         }
+        else{
+            console.log('invalid token')
+        }
+
 
     }
 </script>
 
 <template>
-            <SideBar v-if="(authorization=true)"></SideBar> <!-- Hier is de error in-->
+            <SideBar v-if="isAuthenticated"></SideBar> <!-- Hier is de error in-->
             <div class="test">
                 <Suspense>
-                <HomePage v-if="(authorization=true)" />
+                <HomePage v-if="isAuthenticated" />
                 <NoAccess v-else />
             </Suspense>
 
