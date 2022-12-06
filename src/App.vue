@@ -1,58 +1,91 @@
 <script setup>
-    import { RouterLink, RouterView } from 'vue-router'
-    import HomePage from './components/HomePage.vue'
-    import SideBar from './components/sidebar/SideBar.vue'
+    import { onBeforeRouteUpdate, RouterLink, RouterView } from 'vue-router'
+    import HomePage from './views/HomePage.vue'
+    import SideBar from './components/SideBar.vue'
     import { onMounted } from 'vue'
+    import router from './router'
+    import NoAccess from './views/NoAccess.vue'
 
-    import '@aws-amplify/ui-vue/styles.css';
-    import { Amplify } from 'aws-amplify';
-    import {
-        Authenticator,
-        AuthenticatorSignUpFormFields,
-        // Vue Composable to get access to validation errors
-        useAuthenticator,
-        // Amplify UI Primitives to simplify the custom fields
-        AmplifyCheckBox,
-    } from '@aws-amplify/ui-vue';
-
-    import awsExports from './aws-exports';
     import { toRefs } from 'vue';
-    Amplify.configure(awsExports);
 
-    import { VueScrollFixedNavbar } from "vue-scroll-fixed-navbar";
-    const { validationErrors } = toRefs(useAuthenticator());
-
+    let authorization = false;
     onMounted(() => {
-        alert('hi')
+
+        //check if access token is there and
+        
+        let currentUrl = window.location.href;
+        const token = currentUrl.split(/[\&=/]/);
+        setLocalVariables(token);
+        console.log(currentUrl);
+        let check = isAuth();
+        if(check == false){
+
+            console.log('not authorized');
+            router.push('noaccess') 
+            //deny access to page
+        }
+        console.log(check);
+
+ 
+ 
+        
     })
 
-    const services = {
-        async validateCustomSignUp(formData) {
-            if (!formData.acknowledgement) {
-                return {
-                    acknowledgement: 'You must agree to the Terms & Conditions',
-                };
+    function isAuth(){
+        if (localStorage.accesstoken) {
+            const jwtPayload = parsesJwt(localStorage.accesstoken);
+            //console.log(localStorage.accesstoken);
+            if (jwtPayload.exp < Date.now()/1000) {
+                // token expired
+                deleteTokenFromLocalStorage();
+                return false;
             }
-        },
-    };
+            authorization = true;
+            console.log('true');
+            return true;
+        } else {
+            console.log('false');
+            return false;
+        }
+    }
+    function parsesJwt(token) { //if jwt token is valid do this
+        try{
+            var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    return JSON.parse(jsonPayload);
+        } catch{
+            return false;
+        }
+        
+        }
+    
+
+    function setLocalVariables(token) {
+        try{
+            localStorage.setItem("accesstoken", token[6]);
+            var json = parsesJwt(token[6])
+            localStorage.setItem("username", json.username);
+            localStorage.setItem("userId", json.sub);
+            localStorage.setItem("role", json["cognito:groups"])
+        }catch{
+            console.log('error');
+        }
+
+    }
 </script>
 
 <template>
-    <authenticator initial-state="signIn" :services="services">
-        <template v-slot:sign-up-fields>
-            <authenticator-sign-up-form-fields />
-            <amplify-check-box :errorMessage="validationErrors.acknowledgement" />
-        </template>
-        <template v-slot="{ user, signOut }">
-            <SideBar></SideBar> <!-- Hier is de error in-->
+            <SideBar v-if="(authorization=true)"></SideBar> <!-- Hier is de error in-->
             <div class="test">
-                <HomePage></HomePage>
+                <Suspense>
+                <HomePage v-if="(authorization=true)" />
+                <NoAccess v-else />
+            </Suspense>
 
             </div>
-            <button @click="signOut">Sign Out</button>
-        </template>
-
-    </authenticator>
 
 </template>
 
@@ -67,19 +100,6 @@
         right: 0;
         margin: auto;
     }
-    [data-amplify-authenticator] {
-        --amplify-colors-background-primary: var(--amplify-colors-neutral-90);
-        --amplify-colors-background-secondary: var(--amplify-colors-neutral-100);
-        --amplify-colors-brand-primary-10: var(--amplify-colors-teal-100);
-        --amplify-colors-brand-primary-80: var(--amplify-colors-teal-40);
-        --amplify-colors-brand-primary-90: var(--amplify-colors-teal-20);
-        --amplify-colors-brand-primary-100: var(--amplify-colors-teal-10);
-        --amplify-colors-font-interactive: var(--amplify-colors-white);
-        --amplify-components-tabs-item-active-color: var(--amplify-colors-white);
-        --amplify-components-tabs-item-focus-color: var(--amplify-colors-white);
-        --amplify-components-tabs-item-hover-color: var(--amplify-colors-orange);
-    }
-
     header {
         line-height: 1.5;
         max-height: 100vh;

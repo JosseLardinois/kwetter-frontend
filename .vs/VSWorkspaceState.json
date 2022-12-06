@@ -3,9 +3,10 @@
     "",
     "\\src",
     "\\src\\components",
+    "\\src\\components\\sidebar",
     "\\src\\router",
     "\\src\\views"
   ],
-  "SelectedNode": "\\src\\components\\Login.vue",
+  "SelectedNode": "\\src\\App.vue",
   "PreviewInSolutionExplorer": false
 }
